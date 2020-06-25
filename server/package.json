@@ -1,0 +1,26 @@
+{
+  "name": "psi-intersection",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Romeo Copaciu <rocodesign@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon",
+    "build": "rimraf ./build && tsc",
+    "start:prod": "npm run build && node build/index.js"
+  },
+  "dependencies": {
+    "@openmined/psi.js": "^0.1.1",
+    "@types/node": "^14.0.13",
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2"
+  }
+}
