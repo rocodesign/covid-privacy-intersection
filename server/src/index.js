@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 
 import PSIClient from '@openmined/psi.js/client/wasm/es'
 import PSIServer from '@openmined/psi.js/server/wasm/es'
+import { getRequest, getIntersection } from './psi-client'
 
 // this should be stored in the database
 const infectedTokens = []
@@ -84,6 +85,21 @@ app.post('/check-infection', async (req, res) => {
   const serverSetup = s.createSetupMessage(fpr, req.body.num, serverInputs)
   const serverResponse = s.processRequest(req.body.clientRequest)
   res.json({ serverSetup, serverResponse })
+})
+
+app.post('/check-infection-server', async (req, res) => {
+  if (serverInputs.length === 0) return res.json({ status: false })
+  const clientRequest = await getRequest(req.body.tokens)
+
+  const s = await initializeServer()
+  const serverSetup = s.createSetupMessage(
+    fpr,
+    req.body.tokens.length,
+    serverInputs
+  )
+  const serverResponse = s.processRequest(clientRequest)
+  const intersection = await getIntersection({ serverSetup, serverResponse })
+  res.json({ intersection })
 })
 
 app.listen(PORT, () => console.log(`server running on ${PORT}`))

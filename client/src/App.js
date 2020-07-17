@@ -34,6 +34,12 @@ async function check(tokens) {
     .then((data) => getIntersection(data))
 }
 
+async function checkServer(tokens) {
+  return axios
+    .post(`${API_URL}check-infection-server`, { tokens })
+    .then((data) => data.data.intersection)
+}
+
 const clientId = genToken()
 
 const statuses = ['Healthy', 'Infected', 'Exposed']
@@ -56,8 +62,17 @@ function App() {
   }, [tokens])
 
   const checkExposure = useCallback(() => {
-    check(handshakes).then((aaa) => {
-      if (aaa > 0) {
+    check(handshakes).then((int) => {
+      if (int > 0) {
+        setStatus(2)
+      }
+    })
+  }, [handshakes])
+
+  const checkExposureServer = useCallback(() => {
+    checkServer(handshakes).then((int) => {
+      console.warn('checked server ', int)
+      if (int > 0) {
         setStatus(2)
       }
     })
@@ -114,6 +129,15 @@ function App() {
           onClick={checkExposure}
         >
           Check exposure
+        </Button>
+        <Button
+          variant="contained"
+          style={{ marginBottom: 5 }}
+          color="primary"
+          disabled={handshakes.length === 0}
+          onClick={checkExposureServer}
+        >
+          Check exposure server
         </Button>
         <Button
           variant="contained"
